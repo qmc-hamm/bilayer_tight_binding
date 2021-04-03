@@ -1,27 +1,7 @@
 import h5py
 import numpy as np
 import pandas as pd
-from descriptors_graphene import nnmat
-
-def ix_to_dist(lattice_vectors, atomic_basis, di, dj, ai, aj):
-    """
-    Converts displacement indices to 
-    physical distances and all the 2-body terms we care about
-    Fang and Kaxiras, Phys. Rev. B 93, 235153 (2016)
-
-    dxy - Distance in Bohr, projected in the x/y plane
-    dz  - Distance in Bohr, projected onto the z axis
-    """
-    displacement_vector = di[:, np.newaxis] * lattice_vectors[0] +\
-                          dj[:, np.newaxis] * lattice_vectors[1] +\
-                          atomic_basis[aj] - atomic_basis[ai]
-
-    displacement_vector_xy = displacement_vector[:, :2] 
-    displacement_vector_z =  displacement_vector[:, -1]
-
-    dxy = np.linalg.norm(displacement_vector_xy, axis = 1)
-    dz = np.abs(displacement_vector_z)
-    return dxy, dz
+from descriptors_graphene import nnmat, ix_to_dist
 
 def ix_to_orientation(lattice_vectors, atomic_basis, di, dj, ai, aj):
     """
