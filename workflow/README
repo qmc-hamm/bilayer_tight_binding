@@ -1,0 +1,4 @@
+Example workflow files for graphene and bi-layer graphene calculations
+    scf_*.py files contain example SCF calculations using PySCF
+    wannier_*.py use the results from the SCF calculation to generate wannierized orbitals and hoppings using Wannier90
+    wannier_to_hdf.py can be used to map the Wannier90 output files to the HDF data files stored in ../datasets/
