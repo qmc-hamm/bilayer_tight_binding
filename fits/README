@@ -1,4 +1,4 @@
 Fitting functions and fits for deformed single- and bi-layer graphene 
     training_data.py - Functions to collect training data (descriptors + dependent variable) from raw HDF files
     functions.py   - Fitting functions used in the regression
-    fit.py         - Code for conducting the fitting, generates corresponding HDF output files
+    fit_*.py         - Code for conducting the fitting, generates corresponding HDF output files
