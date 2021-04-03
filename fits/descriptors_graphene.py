@@ -36,8 +36,7 @@ def nnmat(lattice_vectors, atomic_basis):
 
 def ix_to_dist(lattice_vectors, atomic_basis, di, dj, ai, aj):
     """ 
-    Converts displacement indices to 
-    physical distances and all the 2-body terms we care about
+    Converts displacement indices to physical distances
     Fang and Kaxiras, Phys. Rev. B 93, 235153 (2016)
 
     dxy - Distance in Bohr, projected in the x/y plane
@@ -63,7 +62,7 @@ def partition_tb(lattice_vectors, atomic_basis, di, dj, ai, aj):
     YOU MAY GENERALIZE THIS IN THE FUTURE
     ###########################################################
     """
-    distances = ix_to_dist(lattice_vectors, atomic_basis, di, dj, ai, aj)
+    distances = ix_to_dist(lattice_vectors, atomic_basis, di, dj, ai, aj)[0]
     ix = np.argsort(distances)
     t01_ix = ix[:3 * len(di) // 39]
     t02_ix = ix[3 * len(di) // 39 :9 * len(di) // 39]
@@ -81,17 +80,18 @@ def triangle_height(a, base):
     height = 2 * area / np.linalg.norm(base)
     return height
 
-def t01_descriptors(lattice_vectors, atomic_basis, tij, di, dj, ai, aj):
+def t01_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     # Compute NN distances
-    r = d1[:, np.newaxis] * lattice_vectors[0] + d2[:, np.newaxis] * lattice_vectors[1] +\
-        atomic_basis[a2] - atomic_basis[a1] # Relative coordinates
-    a = np.linalg.norm(r, axis = 1)
-    return pd.DataFrame({'t': tij, 'a': a})
+    r = di[:, np.newaxis] * lattice_vectors[0] + dj[:, np.newaxis] * lattice_vectors[1] +\
+        atomic_basis[aj] - atomic_basis[ai] # Relative coordinates
 
-def t02_descriptors(lattice_vectors, atomic_basis, tij, di, dj, ai, aj):
+    a = np.linalg.norm(r, axis = 1)
+    return pd.DataFrame({'a': a})
+
+def t02_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     # Compute NNN distances
-    r = d1[:, np.newaxis] * lattice_vectors[0] + d2[:, np.newaxis] * lattice_vectors[1] +\
-        atomic_basis[a2] - atomic_basis[a1] # Relative coordinates
+    r = di[:, np.newaxis] * lattice_vectors[0] + dj[:, np.newaxis] * lattice_vectors[1] +\
+        atomic_basis[aj] - atomic_basis[ai] # Relative coordinates
     b = np.linalg.norm(r, axis = 1)
 
     # Compute h1, h2
@@ -99,20 +99,20 @@ def t02_descriptors(lattice_vectors, atomic_basis, tij, di, dj, ai, aj):
     h2 = []
     mat = nnmat(lattice_vectors, atomic_basis)
     for i in range(len(r)):
-        nn = mat[a2[i]] + r[i]
+        nn = mat[aj[i]] + r[i]
         nndist = np.linalg.norm(nn, axis = 1)
         ind = np.argsort(nndist)
         h1.append(triangle_height(nn[ind[0]], r[i]))
         h2.append(triangle_height(nn[ind[1]], r[i]))
-    return pd.DataFrame({'t': t, 'b': b, 'h1': h1, 'h2': h2})
+    return pd.DataFrame({'b': b, 'h1': h1, 'h2': h2})
     
-def t03_descriptors(lattice_vectors, atomic_basis, tij, di, dj, ai, aj):
+def t03_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     """
     Compute t03 descriptors
     """
     # Compute NNNN distances
-    r = d1[:, np.newaxis] * lattice_vectors[0] + d2[:, np.newaxis] * lattice_vectors[1] +\
-        atomic_basis[a2] - atomic_basis[a1] # Relative coordinates
+    r = di[:, np.newaxis] * lattice_vectors[0] + dj[:, np.newaxis] * lattice_vectors[1] +\
+        atomic_basis[aj] - atomic_basis[ai] # Relative coordinates
     c = np.linalg.norm(r, axis = 1)
 
     # All other hexagon descriptors
@@ -120,15 +120,15 @@ def t03_descriptors(lattice_vectors, atomic_basis, tij, di, dj, ai, aj):
     h = []
     mat = nnmat(lattice_vectors, atomic_basis)
     for i in range(len(r)):
-        nn = mat[a2[i]] + r[i]
+        nn = mat[aj[i]] + r[i]
         nndist = np.linalg.norm(nn, axis = 1)
         ind = np.argsort(nndist)
-        b = nndist(ind[0])
-        d = nndist(ind[1])
+        b = nndist[ind[0]]
+        d = nndist[ind[1]]
         h3 = triangle_height(nn[ind[0]], r[i])
         h4 = triangle_height(nn[ind[1]], r[i])
 
-        nn = r[i] - mat[a1[i]]
+        nn = r[i] - mat[ai[i]]
         nndist = np.linalg.norm(nn, axis = 1)
         ind = np.argsort(nndist)
         a = nndist[ind[0]]
@@ -138,29 +138,21 @@ def t03_descriptors(lattice_vectors, atomic_basis, tij, di, dj, ai, aj):
 
         l.append((a + b + d + e)/4)
         h.append((h1 + h2 + h3 + h4)/4)
-    return pd.DataFrame({'t': tij, 'c': c, 'l': l, 'h': h})
+    return pd.DataFrame({'c': c, 'l': l, 'h': h})
 
-def descriptors(hdf_in):
+def descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
+    """ 
+    Build bi-layer descriptors given geometric quantities
+        lattice_vectors - lattice_vectors of configuration
+        atomic_basis - atomic basis of configuration
+        di, dj - lattice_vector displacements between pair i, j
+        ai, aj - basis elements for pair i, j
     """
-    Given an HDF file that contains data, compute your graphene descriptors
-    """
-
-    with h5py.File(hdf_in, 'r') as hdf:
-        # Unpack hdf
-        lattice_vectors = np.array(hdf['lattice_vectors'][:]) * 1.88973
-        atomic_basis =    np.array(hdf['atomic_basis'][:])    * 1.88973
-        tb_hamiltonian = hdf['tb_hamiltonian']
-        tij = np.array(tb_hamiltonian['tij'][:])
-        di  = np.array(tb_hamiltonian['displacementi'][:])
-        dj  = np.array(tb_hamiltonian['displacementj'][:])
-        ai  = np.array(tb_hamiltonian['atomi'][:])
-        aj  = np.array(tb_hamiltonian['atomj'][:])
-
     # Partition 
     partition = partition_tb(lattice_vectors, atomic_basis, di, dj, ai, aj)
-
+    
     # Compute descriptors
-    t01 = t01_descriptors(lattice_vectors, atomic_basis, tij[partition[0]], di[partition[0]], dj[partition[0]], ai[partition[0]], aj[partition[0]])
-    t02 = t02_descriptors(lattice_vectors, atomic_basis, tij[partition[1]], di[partition[1]], dj[partition[1]], ai[partition[1]], aj[partition[1]])
-    t03 = t03_descriptors(lattice_vectors, atomic_basis, tij[partition[3]], di[partition[3]], dj[partition[3]], ai[partition[3]], aj[partition[3]])
+    t01 = t01_descriptors(lattice_vectors, atomic_basis, di[partition[0]], dj[partition[0]], ai[partition[0]], aj[partition[0]])
+    t02 = t02_descriptors(lattice_vectors, atomic_basis, di[partition[1]], dj[partition[1]], ai[partition[1]], aj[partition[1]])
+    t03 = t03_descriptors(lattice_vectors, atomic_basis, di[partition[2]], dj[partition[2]], ai[partition[2]], aj[partition[2]])
     return t01, t02, t03
