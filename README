@@ -1,8 +1,8 @@
 Publication-ready directory for single and bi-layer graphene DFT tight-binding models under lattice deformation. 
 Directory structure
-    workflow/ - Contains example files for conducting SCF and Wannierization calculations 
-    datasets/ - Contains raw datasets for single- and bi-layer graphene as HDF files
-    descriptors/  - Contains files that build descriptors from the raw data HDF files
-    fits/     - Contains fits using descriptors, results saved as HDF files
-    plots/    - Plotting fit quality for visualization
-    model/    - Final best model for hoppings in a deformed bi-layer or single-layer system (user facing)
+    workflow/ - Contains example files for conducting SCF and Wannierization calculations                       (paper)
+    datasets/ - Contains raw datasets for single- and bi-layer graphene as HDF files                            (user)
+    descriptors/  - Contains files that build descriptors from the raw data HDF files                           (user)
+    fits/     - Contains fits using descriptors, results saved as HDF files                                     (paper)
+    plots/    - Plotting fit quality for visualization                                                          (paper)
+    model/    - Final best model for hoppings in a deformed bi-layer or single-layer system                     (user)
