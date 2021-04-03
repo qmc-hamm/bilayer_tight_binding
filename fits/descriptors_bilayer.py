@@ -33,30 +33,22 @@ def ix_to_orientation(lattice_vectors, atomic_basis, di, dj, ai, aj):
         theta_21.append(theta_inn[0])
     return theta_12, theta_21
 
-def descriptors(hdf_in):
+def descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     """
-    Given an HDF file that contains data, build your bi-layer descriptors
+    Build bi-layer descriptors given geometric quantities
+        lattice_vectors - lattice_vectors of configuration
+        atomic_basis - atomic basis of configuration
+        di, dj - lattice_vector displacements between pair i, j
+        ai, aj - basis elements for pair i, j
     """
     
     output = {
         'dxy': [], # Distance in Bohr, xy plane
         'dz': [],  # Distance in Bohr, z
         'd': [],   # Distance in Bohr 
-        't': [],   # Hopping in eV
         'theta_12': [], # Orientation of upper layer NN environment
         'theta_21': [], # Orientation of lower layer NN environment
     }
-
-    with h5py.File(hdf_in, 'r') as hdf:
-        # Unpack hdf
-        lattice_vectors = np.array(hdf['lattice_vectors'][:]) * 1.88973
-        atomic_basis =    np.array(hdf['atomic_basis'][:])    * 1.88973
-        tb_hamiltonian = hdf['tb_hamiltonian']
-        tij = np.array(tb_hamiltonian['tij'][:])
-        di  = np.array(tb_hamiltonian['displacementi'][:])
-        dj  = np.array(tb_hamiltonian['displacementj'][:])
-        ai  = np.array(tb_hamiltonian['atomi'][:])
-        aj  = np.array(tb_hamiltonian['atomj'][:])
 
     # 1-body terms
     dist_xy, dist_z = ix_to_dist(lattice_vectors, atomic_basis, di, dj, ai, aj)
@@ -64,7 +56,6 @@ def descriptors(hdf_in):
     output['dxy'] = list(dist_xy)
     output['dz'] = list(dist_z)
     output['d'] = list(dist)
-    output['t'] = list(tij)
 
     # Many-body terms
     theta_12, theta_21 = ix_to_orientation(lattice_vectors, atomic_basis, di, dj, ai, aj)
