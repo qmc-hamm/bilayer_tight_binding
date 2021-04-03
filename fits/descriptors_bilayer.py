@@ -1,0 +1,96 @@
+import h5py
+import numpy as np
+import pandas as pd
+from descriptors_graphene import nnmat
+
+def ix_to_dist(lattice_vectors, atomic_basis, di, dj, ai, aj):
+    """
+    Converts displacement indices to 
+    physical distances and all the 2-body terms we care about
+    Fang and Kaxiras, Phys. Rev. B 93, 235153 (2016)
+
+    dxy - Distance in Bohr, projected in the x/y plane
+    dz  - Distance in Bohr, projected onto the z axis
+    """
+    displacement_vector = di[:, np.newaxis] * lattice_vectors[0] +\
+                          dj[:, np.newaxis] * lattice_vectors[1] +\
+                          atomic_basis[aj] - atomic_basis[ai]
+
+    displacement_vector_xy = displacement_vector[:, :2] 
+    displacement_vector_z =  displacement_vector[:, -1]
+
+    dxy = np.linalg.norm(displacement_vector_xy, axis = 1)
+    dz = np.abs(displacement_vector_z)
+    return dxy, dz
+
+def ix_to_orientation(lattice_vectors, atomic_basis, di, dj, ai, aj):
+    """
+    Converts displacement indices to orientations of the 
+    nearest neighbor environments using definitions in 
+    Fang and Kaxiras, Phys. Rev. B 93, 235153 (2016)
+
+    theta_12 - Orientation of upper-layer relative to bond length
+    theta_21 - Orientation of lower-layer relative to bond length
+    """
+    import scipy.spatial as spatial
+    displacement_vector = di[:, np.newaxis] * lattice_vectors[0] +\
+                          dj[:, np.newaxis] * lattice_vectors[1] +\
+                          atomic_basis[aj] - atomic_basis[ai]
+    mat = nnmat(lattice_vectors, atomic_basis)
+
+    # Compute distances and angles
+    theta_12 = []
+    theta_21 = []
+    for disp, i, j, inn, jnn in zip(displacement_vector, ai, aj, mat[ai], mat[aj]):
+        sin_jnn = np.cross(jnn[:,:2], disp[:2]) 
+        sin_inn = np.cross(inn[:,:2], disp[:2]) 
+        cos_jnn = np.dot(jnn[:,:2], disp[:2]) 
+        cos_inn = np.dot(inn[:,:2], disp[:2]) 
+        theta_jnn = np.arctan2(sin_jnn, cos_jnn)
+        theta_inn = np.arctan2(sin_inn, cos_inn)
+
+        theta_12.append(np.pi - theta_jnn[0])
+        theta_21.append(theta_inn[0])
+    return theta_12, theta_21
+
+def descriptors(hdf_in):
+    """
+    Given an HDF file that contains data, build your bi-layer descriptors
+    """
+    
+    output = {
+        'dxy': [], # Distance in Bohr, xy plane
+        'dz': [],  # Distance in Bohr, z
+        'd': [],   # Distance in Bohr 
+        't': [],   # Hopping in eV
+        'theta_12': [], # Orientation of upper layer NN environment
+        'theta_21': [], # Orientation of lower layer NN environment
+    }
+
+    with h5py.File(hdf_in, 'r') as hdf:
+        # Unpack hdf
+        lattice_vectors = np.array(hdf['lattice_vectors'][:]) * 1.88973
+        atomic_basis =    np.array(hdf['atomic_basis'][:])    * 1.88973
+        tb_hamiltonian = hdf['tb_hamiltonian']
+        tij = np.array(tb_hamiltonian['tij'][:])
+        di  = np.array(tb_hamiltonian['displacementi'][:])
+        dj  = np.array(tb_hamiltonian['displacementj'][:])
+        ai  = np.array(tb_hamiltonian['atomi'][:])
+        aj  = np.array(tb_hamiltonian['atomj'][:])
+
+    # 1-body terms
+    dist_xy, dist_z = ix_to_dist(lattice_vectors, atomic_basis, di, dj, ai, aj)
+    dist = np.sqrt(dist_z ** 2 + dist_xy ** 2)
+    output['dxy'] = list(dist_xy)
+    output['dz'] = list(dist_z)
+    output['d'] = list(dist)
+    output['t'] = list(tij)
+
+    # Many-body terms
+    theta_12, theta_21 = ix_to_orientation(lattice_vectors, atomic_basis, di, dj, ai, aj)
+    output['theta_12'] += list(theta_12)
+    output['theta_21'] += list(theta_21)
+   
+    # Return pandas DataFrame
+    df = pd.DataFrame(output)
+    return df
