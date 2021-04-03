@@ -53,3 +53,90 @@ def ix_to_dist(lattice_vectors, atomic_basis, di, dj, ai, aj):
     dxy = np.linalg.norm(displacement_vector_xy, axis = 1)
     dz = np.abs(displacement_vector_z)
     return dxy, dz
+
+def partition_tb(lattice_vectors, atomic_basis, di, dj, ai, aj):
+    """
+    Given displacement indices and geometry,
+    get indices for partitioning the data
+
+    ###########################################################
+    YOU MAY GENERALIZE THIS IN THE FUTURE
+    ###########################################################
+    """
+    distances = ix_to_dist(lattice_vectors, atomic_basis, di, dj, ai, aj)
+    ix = np.argsort(distances)
+    t01_ix = ix[:3 * len(di) // 39]
+    t02_ix = ix[3 * len(di) // 39 :9 * len(di) // 39]
+    t03_ix = ix[9 * len(di) // 39 :12 * len(di) // 39]
+    return t01_ix, t02_ix, t03_ix
+
+def triangle_height(a, base):
+    """
+    Give area of a triangle given two displacement vectors for 2 sides
+    """
+    area = np.linalg.det(
+            np.array([a, base, [1, 1, 1]])
+    )
+    area = np.abs(area)/2
+    height = 2 * area / np.linalg.norm(base)
+    return height
+
+def t01_descriptors(lattice_vectors, atomic_basis, nnmat, tij, di, dj, ai, aj, partition, typ, uuid, energy):
+    # Compute NN distances
+    r = d1[:, np.newaxis] * lattice_vectors[0] + d2[:, np.newaxis] * lattice_vectors[1] +\
+        atomic_basis[a2] - atomic_basis[a1] # Relative coordinates
+    a = np.linalg.norm(r, axis = 1)
+    return {'t': list(tij), 'a': list(a)}
+
+def t02_descriptors(lattice_vectors, atomic_basis, nnmat, tij, di, dj, ai, aj, partition, typ, uuid, energy):
+    # Compute NNN distances
+    r = d1[:, np.newaxis] * lattice_vectors[0] + d2[:, np.newaxis] * lattice_vectors[1] +\
+        atomic_basis[a2] - atomic_basis[a1] # Relative coordinates
+    b = np.linalg.norm(r, axis = 1)
+
+    # Compute h1, h2
+    h1 = []
+    h2 = []
+    mat = nnmat(lattice_vectors, atomic_basis)
+    for i in range(len(r)):
+        nn = nnmat[a2[i]] + r[i]
+        nndist = np.linalg.norm(nn, axis = 1)
+        ind = np.argsort(nndist)
+        h1.append(triangle_height(nn[ind[0]], r[i]))
+        h2.append(triangle_height(nn[ind[1]], r[i]))
+    return {'t': list(tij), 'b': list(b), 'h1': list(h1), 'h2': list(h2)}
+    
+
+def t03_descriptors(lattice_vectors, atomic_basis, tij, di, dj, ai, aj):
+    """
+    Compute t03 descriptors
+    """
+    # Compute NNNN distances
+    r = d1[:, np.newaxis] * lattice_vectors[0] + d2[:, np.newaxis] * lattice_vectors[1] +\
+        atomic_basis[a2] - atomic_basis[a1] # Relative coordinates
+    c = np.linalg.norm(r, axis = 1)
+
+    # All other hexagon descriptors
+    l = []
+    h = []
+    mat = nnmat(lattice_vectors, atomic_basis)
+    for i in range(len(r)):
+        nn = mat[a2[i]] + r[i]
+        nndist = np.linalg.norm(nn, axis = 1)
+        ind = np.argsort(nndist)
+        b = nndist(ind[0])
+        d = nndist(ind[1])
+        h3 = triangle_height(nn[ind[0]], r[i])
+        h4 = triangle_height(nn[ind[1]], r[i])
+
+        nn = r[i] - nnmat[a1[i]]
+        nndist = np.linalg.norm(nn, axis = 1)
+        ind = np.argsort(nndist)
+        a = nndist[ind[0]]
+        e = nndist[ind[1]]
+        h1 = triangle_height(nn[ind[0]], r[i])
+        h2 = triangle_height(nn[ind[1]], r[i])
+
+        l.append((a + b + d + e)/4)
+        h.append((h1 + h2 + h3 + h4)/4)
+    return {'t': list(tij), 'c': list(c), 'l': list(p), 'h': list(h)/4)}
