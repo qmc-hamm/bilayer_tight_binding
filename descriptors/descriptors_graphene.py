@@ -57,16 +57,20 @@ def partition_tb(lattice_vectors, atomic_basis, di, dj, ai, aj):
     """
     Given displacement indices and geometry,
     get indices for partitioning the data
-
-    ###########################################################
-    YOU MAY GENERALIZE THIS IN THE FUTURE
-    ###########################################################
     """
+    # First find the smallest distance in the lattice -> reference for NN 
     distances = ix_to_dist(lattice_vectors, atomic_basis, di, dj, ai, aj)[0]
-    ix = np.argsort(distances)
-    t01_ix = ix[:3 * len(di) // 39]
-    t02_ix = ix[3 * len(di) // 39 :9 * len(di) // 39]
-    t03_ix = ix[9 * len(di) // 39 :12 * len(di) // 39]
+    min_distance = min(distances)
+
+    # NN should be within 5% of min_distance
+    t01_ix = (distances >= 0.95 * min_distance) & (distances <= 1.05 * min_distance)
+
+    # NNN should be withing 5% of sqrt(3)x of min_distance
+    t02_ix = (distances >= 0.95 * np.sqrt(3) * min_distance) & (distances <= 1.05 * np.sqrt(3) * min_distance)
+
+    # NNNN should be within 5% of 2x of min_distance
+    t03_ix = (distances >= 0.95 * 2 * min_distance) & (distances <= 1.05 * 2 * min_distance)
+    
     return t01_ix, t02_ix, t03_ix
 
 def triangle_height(a, base):
