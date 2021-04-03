@@ -7,10 +7,10 @@ from descriptors_graphene import partition_tb, descriptors
 
 # Construct pandas data frame for fitting
 data = []
-flist = subprocess.Popen(["ls", '../datasets/bilayer/'],
+flist = subprocess.Popen(["ls", '../datasets/graphene/'],
                       stdout=subprocess.PIPE).communicate()[0]
 flist = flist.decode('utf-8').split("\n")[:-1]
-flist = ['../datasets/bilayer/'+x for x in flist]
+flist = ['../datasets/graphene/'+x for x in flist]
 
 df1 = []
 df2 = []
@@ -37,8 +37,6 @@ for f in flist:
 df1 = pd.concat(df1)
 df2 = pd.concat(df2)
 df3 = pd.concat(df3)
-print(df1['a'])
-exit(0)
 
 # Conduct fits
 fits = {
@@ -58,6 +56,7 @@ for k in fits.keys():
     lm = sm.OLS(y, X).fit()
     fits[k]['parameters'] = lm.params
     fits[k]['standard_errors'] = lm.HC0_se
+    print(lm.summary())
 
 # Save to HDF output file 
 f = h5py.File('fit_graphene.hdf5','w')
