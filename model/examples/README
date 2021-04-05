@@ -1,0 +1,3 @@
+Example calculations
+    *.py - Generate band structures using our model
+    *.json - Reference DFT band structures 

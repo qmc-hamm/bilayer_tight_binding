@@ -1,4 +1,5 @@
 import sys
+import json
 sys.path.append('../')
 from model import graphene 
 from pythtb import *
@@ -19,11 +20,11 @@ z = 0
 lat = lattice_vectors[:, :-1]
 orb = atomic_basis[:, :-1]
 gra = tb_model(2, 2, lat, orb)
-k=[[0.0, 0.0], [2/3., -1./3.], [0.5, 0]]
+k=[[0.0, 0.0], [2/3., -1./3.], [1./3., 1./3.]]
 
-color = {3:'k', 9:'b', 12:'m'}
-label = {3:'t01', 9:'t01, t02', 12:'t01, t02, t03'}
-fig, ax = plt.subplots()
+color = {3:'b', 9:'r', 12:'g'}
+label = {3:r'$t_{01}$', 9:r'$t_{01}, t_{02}$', 12:'$t_{01}, t_{02}, t_{03}$'}
+fig, ax = plt.subplots(figsize = (3,3))
 for ii, jj, dii, djj, hopping in zip(i, j, di, dj, hoppings):
     z += 1
     gra.set_hop(hopping, ii, jj, [dii, djj])
@@ -31,8 +32,20 @@ for ii, jj, dii, djj, hopping in zip(i, j, di, dj, hoppings):
         (k_vec, k_dist, k_node) = gra.k_path(k, 100)
         evals = gra.solve_all(k_vec)
         evals -= min(evals[1, :])
-        ax.plot(k_dist, evals[0,:], color=color[z])
-        ax.plot(k_dist, evals[1,:], color=color[z], label=label[z])
+        ax.plot(k_dist, evals[0,:], color=color[z], lw = 3, alpha = 0.5)
+        ax.plot(k_dist, evals[1,:], color=color[z], label=label[z], lw = 3, alpha = 0.5)
+
+# plot the reference data
+ref = json.load(open('reference/graphene.json','r'))
+ref['path'] = np.array(ref['path'])
+ref['bands'] = np.array(ref['bands'])
+ref['path'] /= max(ref['path']) / max(k_dist)
+for i in range(len(ref['bands'])):
+    ax.plot(ref['path'], ref['bands'][i], 'k-')
+
+# figure formatting
+ax.set_ylabel('Energy (eV)')
+ax.set_ylim((-10, 15))
 ax.set_xticks(k_node)
 ax.set_xticklabels(["$\Gamma$", "K", "M"])
 ax.set_xlim(k_node[0], k_node[-1])
