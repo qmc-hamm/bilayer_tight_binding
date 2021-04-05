@@ -26,12 +26,12 @@ def load_bilayer_fit():
 def graphene(lattice_vectors, atomic_basis, i, j, di, dj):
     """
     Input: 
-        lattice_vectors - float (nlat x 3) where nlat = 2 lattice vectors for graphene
-        atomic_basis    - float (natoms x 3) where natoms are the number of atoms in the computational cell 
+        lattice_vectors - float (nlat x 3) where nlat = 2 lattice vectors for graphene in BOHR
+        atomic_basis    - float (natoms x 3) where natoms are the number of atoms in the computational cell in BOHR
         i, j            - int   (n) list of atomic bases you are hopping between
         di, dj          - int   (n) list of displacement indices for the hopping
     Output:
-        hoppings        - float (n) list of hoppings for the given i, j, di, dj
+        hoppings        - float (n) list of hoppings for the given i, j, di, dj in eV
     """
     # Extend lattice_vectors to (3 x 3) for our descriptors, the third lattice vector is arbitrary
     latt_vecs = np.append(lattice_vectors, [[0, 0, 25]], axis = 0)
@@ -59,8 +59,8 @@ def graphene(lattice_vectors, atomic_basis, i, j, di, dj):
 def bilayer(lattice_vectors, atomic_basis, i, j, di, dj):
     """
     Input: 
-        lattice_vectors - float (nlat x 3) where nlat = 2 lattice vectors for graphene
-        atomic_basis    - float (natoms x 3) where natoms are the number of atoms in the computational cell 
+        lattice_vectors - float (nlat x 3) where nlat = 2 lattice vectors for graphene in BOHR
+        atomic_basis    - float (natoms x 3) where natoms are the number of atoms in the computational cell in BOHR
         i, j            - int   (n) list of atomic bases you are hopping between
         di, dj          - int   (n) list of displacement indices for the hopping
     Output:
