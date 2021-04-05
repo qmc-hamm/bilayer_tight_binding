@@ -49,8 +49,8 @@ for s, strain in enumerate(np.linspace(-0.02, 0.02, 11)):
     atomic_basis[:, 1] *=    (1 + strain)
     evals, k_dist, k_node = compute_bands(lattice_vectors, atomic_basis, i, j, di, dj)
 
-    ax.plot(k_dist, evals[0,:], color=cmap(norm(strain * 100)), lw = 1)
-    ax.plot(k_dist, evals[1,:], color=cmap(norm(strain * 100)), lw = 1)
+    ax.plot(k_dist, evals[0,:], color=cmap(norm(strain * 100)), lw = 0.5)
+    ax.plot(k_dist, evals[1,:], color=cmap(norm(strain * 100)), lw = 0.5)
 
 # figure formatting
 divider = make_axes_locatable(ax)
@@ -62,5 +62,4 @@ ax.set_ylim((-10, 15))
 ax.set_xticks(k_node)
 ax.set_xticklabels(['R','G','K','R','S','G','M'])
 ax.set_xlim(k_node[0], k_node[-1])
-ax.legend(loc='best')
 fig.savefig("graphene_strain.pdf", bbox_inches='tight')
