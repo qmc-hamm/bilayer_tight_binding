@@ -36,7 +36,7 @@ for ii, jj, dii, djj, hopping in zip(i, j, di, dj, hoppings):
         ax.plot(k_dist, evals[1,:], color=color[z], label=label[z], lw = 3, alpha = 0.5)
 
 # plot the reference data
-ref = json.load(open('reference/graphene.json','r'))
+ref = json.load(open('graphene.json','r'))
 ref['path'] = np.array(ref['path'])
 ref['bands'] = np.array(ref['bands'])
 ref['path'] /= max(ref['path']) / max(k_dist)
@@ -44,10 +44,10 @@ for i in range(len(ref['bands'])):
     ax.plot(ref['path'], ref['bands'][i], 'k-')
 
 # figure formatting
-ax.set_ylabel('Energy (eV)')
+ax.set_ylabel(r'$E - E_F$ (eV)')
 ax.set_ylim((-10, 15))
 ax.set_xticks(k_node)
-ax.set_xticklabels(["$\Gamma$", "K", "M"])
+ax.set_xticklabels(["$\Gamma$", "K", "$K^\prime$"])
 ax.set_xlim(k_node[0], k_node[-1])
 ax.legend(loc='best')
 fig.savefig("graphene.pdf", bbox_inches='tight')

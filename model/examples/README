@@ -1,3 +1,5 @@
 Example calculations
-    *.py - Generate band structures using our model
-    *.json - Reference DFT band structures 
+    *.json - reference DFT calculations
+
+    graphene.py - example showing the model calculating farther and farther hoppings 
+    graphene_strain.py - example showing the model calculating bands under simple armchair strain
