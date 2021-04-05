@@ -26,7 +26,7 @@ i =  [1, 1, 1, 3, 3, 3, 2, 3, 3, 3, 1, 1, 1, 1]
 j =  [0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 3, 2, 2, 2]
 di = [0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1]
 dj = [0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1]
-atomic_basis_aa = np.array([[0, 0, 0], [0, R0, 0], [0, 0, 6.50], [0, R0, 6.50]])
+atomic_basis_aa = np.array([[0, 0, 0], [0, R0, 0], [0, 0, 6.646], [0, R0, 6.646]])
 hoppings_aa = bilayer(lattice_vectors, atomic_basis_aa, i, j, di, dj)
 evals_aa, k_dist_aa, k_node = compute_bands(lattice_vectors, atomic_basis_aa, i, j, di, dj, hoppings_aa)
 
@@ -35,24 +35,21 @@ i =  [0, 1, 1, 2, 3, 3, 1, 1,  1,  1, 0,  0,  0,  0,  0,  0]
 j =  [1, 0, 0, 3, 2, 2, 2, 3,  3,  3, 2,  2,  3,  2,  3,  3]
 di = [0, 0, 1, 0, 0, 1, 0, 0,  0, -1, 0,  0,  0, -1, -1, -1]
 dj = [0, 1, 1, 0, 1, 1, 0, 0, -1, -1, 0, -1, -1, -1, -1, -2]
-atomic_basis_ab = np.array([[0, 0, 0], [0, R0, 0], [0, R0, 6.50], [0, 2 * R0, 6.50]])
+atomic_basis_ab = np.array([[0, 0, 0], [0, R0, 0], [0, R0, 6.497], [0, 2 * R0, 6.497]])
 hoppings_ab = bilayer(lattice_vectors, atomic_basis_ab, i, j, di, dj)
 evals_ab, k_dist_ab, k_node = compute_bands(lattice_vectors, atomic_basis_ab, i, j, di, dj, hoppings_ab)
 
-#atomic_basis_sp = np.array([[0, 0, 0], [0, R0, 0], [0, 1.5 * R0, 6.50], [0, 2.5 * R0, 6.50]])
-#hoppings_sp = bilayer(lattice_vectors, atomic_basis, i, j, di, dj)
-
 # compute the band structure
-# plot the band structure
-fig, ax = plt.subplots(nrows = 1, ncols = 3, sharex = True, sharey = True, figsize = (11, 3))
+fig, ax = plt.subplots(nrows = 1, ncols = 2, sharex = True, sharey = True, figsize = (7, 3))
 for i in range(len(evals_aa)):
     ax[0].plot(k_dist_aa, evals_aa[i,:], 'k-')
 for i in range(len(evals_ab)):
     ax[1].plot(k_dist_ab, evals_ab[i,:], 'k-')
-
 ax[0].set_ylabel(r'$E - E_F$ (eV)')
 ax[0].set_ylim((-5, 5))
 ax[0].set_xticks(k_node)
 ax[0].set_xticklabels(["M", "K", "M"])
 ax[0].set_xlim(k_node[0], k_node[-1])
+ax[0].set_title('AA')
+ax[1].set_title('AB')
 fig.savefig("bilayer.pdf", bbox_inches='tight')
