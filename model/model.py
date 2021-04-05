@@ -88,7 +88,7 @@ def bilayer(lattice_vectors, atomic_basis, i, j, di, dj):
     # Compute the inter-layer hoppings
     fit = load_bilayer_fit()
     X = descriptors[['dxy','theta_12','theta_21']].values[interlayer]
-    interlayer_hoppings = fang(X, *fit['fang'])
+    interlayer_hoppings = fang(X.T, *fit['fang'])
 
     # Compute the intra-layer hoppings
     intralayer_hoppings = graphene(lattice_vectors, atomic_basis, i[~interlayer], j[~interlayer], di[~interlayer], dj[~interlayer])

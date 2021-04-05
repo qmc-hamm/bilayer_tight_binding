@@ -3,3 +3,5 @@ Example calculations
 
     graphene.py - example showing the model calculating farther and farther hoppings 
     graphene_strain.py - example showing the model calculating bands under simple armchair strain
+
+    bilayer.py - example showing AA, AB, SP bands directly from our model 
