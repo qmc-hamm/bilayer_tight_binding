@@ -1,10 +1,8 @@
 import sys
 import h5py
 import numpy as np 
-sys.path.append('../../fits')
-sys.path.append('../../descriptors')
-from functions import fang
-import descriptors_graphene, descriptors_bilayer
+from bilayer_tight_binding.fits.functions import fang
+from bilayer_tight_binding.descriptors import descriptors_graphene, descriptors_bilayer
 
 def load_graphene_fit():
     """
