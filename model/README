@@ -1,2 +1,6 @@
 Combined hopping model for inter- and intra-layer hoppings in bilayer graphene 
 
+    model.py - has the functions which return you the model 
+    examples/
+        graphene.py - pythTB example for single-layer graphene
+        bilayer.py  - pythTB examples for various bilayer graphene configurations
