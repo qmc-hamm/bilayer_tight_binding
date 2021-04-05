@@ -1,10 +1,10 @@
 import h5py
 import numpy as np 
 from scipy.optimize import curve_fit
-from functions import exponential, moon, fang
-from training_data import bilayer_training_data
+from bilayer_tight_binding.fits.functions import exponential, moon, fang
+from bilayer_tight_binding.fits.training_data import bilayer_training_data
 
-df = bilayer_training_data('../datasets/bilayer/')
+df = bilayer_training_data('../../datasets/bilayer/')
 fits = { 
     'exponential': {
         'function': exponential,
