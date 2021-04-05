@@ -1,12 +1,14 @@
 import sys
 import h5py
 import numpy as np 
+import bilayer_tight_binding.fits
 from bilayer_tight_binding.fits.functions import fang
 from bilayer_tight_binding.descriptors import descriptors_graphene, descriptors_bilayer
 
 def load_graphene_fit():
     fit = {}
-    with h5py.File('fits/fit_graphene.hdf5','r') as hdf:
+    f = "/".join(bilayer_tight_binding.fits.__file__.split("/")[:-1])+"/fit_graphene.hdf5"
+    with h5py.File(f,'r') as hdf:
         fit['t01'] = list(hdf['t01']['parameters'])
         fit['t02'] = list(hdf['t02']['parameters'])
         fit['t03'] = list(hdf['t03']['parameters'])
@@ -14,7 +16,8 @@ def load_graphene_fit():
 
 def load_bilayer_fit():
     fit = {}
-    with h5py.File('fits/fit_bilayer.hdf5','r') as hdf:
+    f = "/".join(bilayer_tight_binding.fits.__file__.split("/")[:-1])+"/fit_bilayer.hdf5"
+    with h5py.File(f,'r') as hdf:
         fit['fang'] = list(hdf['fang']['parameters'])
     return fit
 

@@ -28,7 +28,7 @@ evals -= min(evals[1, :])
 # plot band structure
 fig, ax = plt.subplots(figsize = (3,3))
 ax.plot(k_dist, evals[0,:], color='b', lw = 3, alpha = 0.5)
-ax.plot(k_dist, evals[1,:], color='b', label=label[z], lw = 3, alpha = 0.5)
+ax.plot(k_dist, evals[1,:], color='b', lw = 3, alpha = 0.5)
 
 # plot the reference data
 ref = json.load(open('graphene.json','r'))

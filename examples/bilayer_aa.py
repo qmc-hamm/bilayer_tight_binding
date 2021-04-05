@@ -26,8 +26,8 @@ evals -= min(evals[2, :])
 
 # plot the band structure
 fig, ax = plt.subplots(figsize = (3, 3))
-for i in range(len(evals_aa)):
-    ax.plot(k_dist_aa, evals_aa[i,:], 'k-')
+for i in range(len(evals)):
+    ax.plot(k_dist, evals[i,:], 'k-')
 ax.set_ylabel(r'$E - E_F$ (eV)')
 ax.set_ylim((-5, 5))
 ax.set_xticks(k_node)
