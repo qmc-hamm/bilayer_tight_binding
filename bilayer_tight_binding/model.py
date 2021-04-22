@@ -101,7 +101,7 @@ def bilayer(lattice_vectors, atomic_basis, i, j, di, dj):
 
     return hoppings
 
-def moon(lattice_vectors, atomic_basis, i, j, di, dj):
+def moon_bilayer(lattice_vectors, atomic_basis, i, j, di, dj):
     """
     Moon model for bilayer graphene - Moon and Koshino, PRB 85 (2012)
     Input: 
