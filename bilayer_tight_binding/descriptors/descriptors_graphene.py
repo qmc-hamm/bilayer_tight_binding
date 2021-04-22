@@ -72,7 +72,7 @@ def partition_tb(lattice_vectors, atomic_basis, di, dj, ai, aj):
     t03_ix = (distances >= 0.95 * 2 * min_distance) & (distances <= 1.05 * 2 * min_distance)
    
     # Anything else, we zero out
-    t00 = distances > 1.05 * 2 * min_distances
+    t00 = distances > 1.05 * 2 * min_distance
 
     return t01_ix, t02_ix, t03_ix, t00
 
