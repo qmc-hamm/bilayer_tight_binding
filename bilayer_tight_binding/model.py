@@ -57,6 +57,7 @@ def graphene(lattice_vectors, atomic_basis, i, j, di, dj):
     hoppings[partition[0]] = t01
     hoppings[partition[1]] = t02
     hoppings[partition[2]] = t03
+    hoppings[partition[3]] = 0
 
     return hoppings
 
