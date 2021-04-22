@@ -2,7 +2,7 @@ import sys
 import h5py
 import numpy as np 
 import bilayer_tight_binding.fits
-from bilayer_tight_binding.fits.functions import fang
+from bilayer_tight_binding.fits.functions import fang, moon
 from bilayer_tight_binding.descriptors import descriptors_graphene, descriptors_bilayer
 
 def load_graphene_fit():
@@ -23,6 +23,7 @@ def load_bilayer_fit():
 
 def graphene(lattice_vectors, atomic_basis, i, j, di, dj):
     """
+    Our model for single layer graphene
     Input: 
         lattice_vectors - float (nlat x 3) where nlat = 2 lattice vectors for graphene in BOHR
         atomic_basis    - float (natoms x 3) where natoms are the number of atoms in the computational cell in BOHR
@@ -61,6 +62,7 @@ def graphene(lattice_vectors, atomic_basis, i, j, di, dj):
 
 def bilayer(lattice_vectors, atomic_basis, i, j, di, dj):
     """
+    Our model for bilayer graphene
     Input: 
         lattice_vectors - float (nlat x 3) where nlat = 2 lattice vectors for graphene in BOHR
         atomic_basis    - float (natoms x 3) where natoms are the number of atoms in the computational cell in BOHR
@@ -96,4 +98,25 @@ def bilayer(lattice_vectors, atomic_basis, i, j, di, dj):
     hoppings[interlayer] = interlayer_hoppings
     hoppings[~interlayer] = intralayer_hoppings
 
+    return hoppings
+
+def moon(lattice_vectors, atomic_basis, i, j, di, dj):
+    """
+    Moon model for bilayer graphene - Moon and Koshino, PRB 85 (2012)
+    Input: 
+        lattice_vectors - float (nlat x 3) where nlat = 2 lattice vectors for graphene in BOHR
+        atomic_basis    - float (natoms x 3) where natoms are the number of atoms in the computational cell in BOHR
+        i, j            - int   (n) list of atomic bases you are hopping between
+        di, dj          - int   (n) list of displacement indices for the hopping
+    Output:
+        hoppings        - float (n) list of hoppings for the given i, j, di, dj
+    """
+    lattice_vectors = np.array(lattice_vectors)
+    atomic_basis = np.array(atomic_basis)
+    i = np.array(i)
+    j = np.array(j)
+    di = np.array(di)
+    dj = np.array(dj)
+    dxy, dz = descriptors_graphene.ix_to_dist(lattice_vectors, atomic_basis, di, dj, i, j)
+    hoppings = moon([np.sqrt(dz**2 + dxy**2), dz], -2.7, 1.17, 0.48)
     return hoppings
