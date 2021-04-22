@@ -84,7 +84,7 @@ def bilayer(lattice_vectors, atomic_basis, i, j, di, dj):
     descriptors = descriptors_bilayer.descriptors(lattice_vectors, atomic_basis, di, dj, i, j)
     
     # Partition the intra- and inter-layer hoppings indices 
-    interlayer = np.array(descriptors['dz'] > 0)
+    interlayer = np.array(descriptors['dz'] > 1) # Allows for buckling, won't be more than 1 Bohr
     
     # Compute the inter-layer hoppings
     fit = load_bilayer_fit()
