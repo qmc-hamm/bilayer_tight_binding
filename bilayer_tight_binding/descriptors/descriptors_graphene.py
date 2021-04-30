@@ -59,7 +59,8 @@ def partition_tb(lattice_vectors, atomic_basis, di, dj, ai, aj):
     get indices for partitioning the data
     """
     # First find the smallest distance in the lattice -> reference for NN 
-    distances = ix_to_dist(lattice_vectors, atomic_basis, di, dj, ai, aj)[0]
+    distances = ix_to_dist(lattice_vectors, atomic_basis, di, dj, ai, aj)
+    distances = np.sqrt(distances[0]**2 + distances[1]**2)
     min_distance = min(distances)
 
     # NN should be within 5% of min_distance

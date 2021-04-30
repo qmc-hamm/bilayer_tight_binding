@@ -61,5 +61,5 @@ def bilayer_training_data(dataset):
         data['t'] = tij 
         df.append(data)
     df = pd.concat(df)
-    df = df[df['dz'] > 0] # Inter-layer hoppings only
+    df = df[df['dz'] > 1] # Inter-layer hoppings only, allows for buckling
     return df

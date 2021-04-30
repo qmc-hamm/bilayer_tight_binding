@@ -1,19 +1,22 @@
 import h5py
 import numpy as np 
+import pandas as pd
 import statsmodels.api as sm
 from bilayer_tight_binding.fits.training_data import graphene_training_data
 
 # Single-layer graphene fits
 df1, df2, df3 = graphene_training_data('../../datasets/graphene/')
+df1_, df2_, df3_ = graphene_training_data('../../datasets/bilayer/')
+
 fits = {
     't01': {
-        'df': df1,
+        'df': pd.concat([df1, df1_]),
     },
     't02': {
-        'df': df2,
+        'df': pd.concat([df2, df2_]),
     },
     't03': {
-        'df': df3,
+        'df': pd.concat([df3, df3_]),
     },
 }
 f = h5py.File('fit_graphene.hdf5','w')
