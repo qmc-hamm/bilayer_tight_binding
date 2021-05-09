@@ -5,7 +5,7 @@ import statsmodels.api as sm
 from bilayer_tight_binding.fits.training_data import graphene_training_data
 
 # Single-layer graphene fits
-df1, df2, df3 = graphene_training_data('../../datasets/graphene/')
+df1, df2, df3 = graphene_training_data('../../datasets/rerun/')
 
 fits = {
     't01': {
@@ -23,6 +23,7 @@ for k in fits.keys():
     y = fits[k]['df']['t']
     X = sm.add_constant(fits[k]['df'].drop(['t'], axis = 1))
     lm = sm.OLS(y, X).fit()
+    print(lm.summary())
 
     g = f.create_group(k)
     g.create_dataset('parameters', data=lm.params)

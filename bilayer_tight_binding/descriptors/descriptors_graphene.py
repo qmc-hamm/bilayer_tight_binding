@@ -102,17 +102,15 @@ def t02_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
         atomic_basis[aj] - atomic_basis[ai] # Relative coordinates
     b = np.linalg.norm(r, axis = 1)
 
-    # Compute h1, h2
-    h1 = []
-    h2 = []
+    # Compute h
+    h = []
     mat = nnmat(lattice_vectors, atomic_basis)
     for i in range(len(r)):
         nn = mat[aj[i]] + r[i]
         nndist = np.linalg.norm(nn, axis = 1)
         ind = np.argsort(nndist)
-        h1.append(triangle_height(nn[ind[0]], r[i]))
-        h2.append(triangle_height(nn[ind[1]], r[i]))
-    return pd.DataFrame({'b': b, 'h1': h1, 'h2': h2})
+        h.append(0.5 * (triangle_height(nn[ind[0]], r[i]) + triangle_height(nn[ind[1]], r[i])))
+    return pd.DataFrame({'h': h})
     
 def t03_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     """
@@ -146,7 +144,7 @@ def t03_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
 
         l.append((a + b + d + e)/4)
         h.append((h1 + h2 + h3 + h4)/4)
-    return pd.DataFrame({'c': c, 'l': l, 'h': h})
+    return pd.DataFrame({'c': c})
 
 def descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     """ 

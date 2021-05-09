@@ -4,7 +4,7 @@ from scipy.optimize import curve_fit
 from bilayer_tight_binding.fits.functions import exponential, moon, fang
 from bilayer_tight_binding.fits.training_data import bilayer_training_data
 
-df = bilayer_training_data('../../datasets/bilayer/')
+df = bilayer_training_data('../../datasets/rerun/')
 fits = { 
     'exponential': {
         'function': exponential,
