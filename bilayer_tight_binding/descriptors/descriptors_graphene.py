@@ -110,7 +110,7 @@ def t02_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
         nndist = np.linalg.norm(nn, axis = 1)
         ind = np.argsort(nndist)
         h.append(0.5 * (triangle_height(nn[ind[0]], r[i]) + triangle_height(nn[ind[1]], r[i])))
-    return pd.DataFrame({'h': h})
+    return pd.DataFrame({'b': b, 'h': h})
     
 def t03_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     """

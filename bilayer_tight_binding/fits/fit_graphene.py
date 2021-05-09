@@ -23,7 +23,6 @@ for k in fits.keys():
     y = fits[k]['df']['t']
     X = sm.add_constant(fits[k]['df'].drop(['t'], axis = 1))
     lm = sm.OLS(y, X).fit()
-    print(lm.summary())
 
     g = f.create_group(k)
     g.create_dataset('parameters', data=lm.params)
