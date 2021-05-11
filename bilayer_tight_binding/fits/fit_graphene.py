@@ -5,7 +5,7 @@ import statsmodels.api as sm
 from bilayer_tight_binding.fits.training_data import graphene_training_data
 
 # Single-layer graphene fits
-df1, df2, df3 = graphene_training_data('../../datasets/rerun/')
+df1, df2, df3 = graphene_training_data('../../datasets/bilayer/')
 
 fits = {
     't01': {
