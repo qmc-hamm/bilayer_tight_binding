@@ -92,7 +92,7 @@ def t01_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     # Compute NN distances
     r = di[:, np.newaxis] * lattice_vectors[0] + dj[:, np.newaxis] * lattice_vectors[1] +\
         atomic_basis[aj] - atomic_basis[ai] # Relative coordinates
-
+    r[:, -1] = 0 # Project into z-plane
     a = np.linalg.norm(r, axis = 1)
     return pd.DataFrame({'a': a})
 
@@ -100,17 +100,21 @@ def t02_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     # Compute NNN distances
     r = di[:, np.newaxis] * lattice_vectors[0] + dj[:, np.newaxis] * lattice_vectors[1] +\
         atomic_basis[aj] - atomic_basis[ai] # Relative coordinates
+    r[:, -1] = 0 # Project into z-plane
     b = np.linalg.norm(r, axis = 1)
 
     # Compute h
-    h = []
+    h1 = []
+    h2 = []
     mat = nnmat(lattice_vectors, atomic_basis)
     for i in range(len(r)):
         nn = mat[aj[i]] + r[i]
+        nn[:, -1] = 0 # Project into z-plane
         nndist = np.linalg.norm(nn, axis = 1)
         ind = np.argsort(nndist)
-        h.append(0.5 * (triangle_height(nn[ind[0]], r[i]) + triangle_height(nn[ind[1]], r[i])))
-    return pd.DataFrame({'b': b, 'h': h})
+        h1.append(triangle_height(nn[ind[0]], r[i]))
+        h2.append(triangle_height(nn[ind[1]], r[i]))
+    return pd.DataFrame({'h1': h1, 'h2': h2, 'b': b})
     
 def t03_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     """
@@ -120,6 +124,7 @@ def t03_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     r = di[:, np.newaxis] * lattice_vectors[0] + dj[:, np.newaxis] * lattice_vectors[1] +\
         atomic_basis[aj] - atomic_basis[ai] # Relative coordinates
     c = np.linalg.norm(r, axis = 1)
+    r[:, -1] = 0 # Project into z-plane
 
     # All other hexagon descriptors
     l = []
@@ -127,6 +132,7 @@ def t03_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     mat = nnmat(lattice_vectors, atomic_basis)
     for i in range(len(r)):
         nn = mat[aj[i]] + r[i]
+        nn[:, -1] = 0 # Project into z-plane
         nndist = np.linalg.norm(nn, axis = 1)
         ind = np.argsort(nndist)
         b = nndist[ind[0]]
@@ -135,6 +141,7 @@ def t03_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
         h4 = triangle_height(nn[ind[1]], r[i])
 
         nn = r[i] - mat[ai[i]]
+        nn[:, -1] = 0 # Project into z-plane
         nndist = np.linalg.norm(nn, axis = 1)
         ind = np.argsort(nndist)
         a = nndist[ind[0]]
@@ -144,7 +151,7 @@ def t03_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
 
         l.append((a + b + d + e)/4)
         h.append((h1 + h2 + h3 + h4)/4)
-    return pd.DataFrame({'c': c})
+    return pd.DataFrame({'c': c, 'h': h, 'l': l})
 
 def descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     """ 
