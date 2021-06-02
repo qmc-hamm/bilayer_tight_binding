@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 from bilayer_tight_binding.fits.training_data import graphene_training_data
+from sklearn.model_selection import KFold
 
 # Single-layer graphene fits
 df1, df2, df3 = graphene_training_data('../../datasets/bilayer/')
@@ -22,9 +23,21 @@ f = h5py.File('fit_graphene.hdf5','w')
 for k in fits.keys():
     y = fits[k]['df']['t']
     X = sm.add_constant(fits[k]['df'].drop(['t'], axis = 1))
-    lm = sm.OLS(y, X).fit()
+
+    ptest_list = []
+    ptrain_list = []
+
+    # 3-fold cross validation 
+    kf = KFold(n_splits = 3)
+    for train_index, test_index in kf.split(X):
+        X_train, X_test = X.iloc[train_index], X.iloc[test_index]
+        y_train, y_test = y.iloc[train_index], y.iloc[test_index]
+        lmtrain = sm.OLS(y_train, X_train).fit()
+        lmtest = sm.OLS(y_test, X_test).fit()
+        ptest_list.append(lmtest.params)
+        ptrain_list.append(lmtrain.params)
 
     g = f.create_group(k)
-    g.create_dataset('parameters', data=lm.params)
-    g.create_dataset('standard_errors', data=lm.HC0_se)
+    g.create_dataset('parameters_train', data=ptrain_list)
+    g.create_dataset('parameters_test',  data=ptest_list)
 f.close()
