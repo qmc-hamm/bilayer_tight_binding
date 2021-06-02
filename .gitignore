@@ -131,3 +131,6 @@ dmypy.json
 # Documents 
 *pdf
 *swp
+
+# Debug python files
+*DEBUG.py

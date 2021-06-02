@@ -10,9 +10,9 @@ def load_graphene_fit():
     fit = {}
     f = "/".join(bilayer_tight_binding.fits.__file__.split("/")[:-1])+"/fit_graphene.hdf5"
     with h5py.File(f,'r') as hdf:
-        fit['t01'] = np.array(list(hdf['t01']['parameters'])).mean(axis = 0)
-        fit['t02'] = np.array(list(hdf['t02']['parameters'])).mean(axis = 0)
-        fit['t03'] = np.array(list(hdf['t03']['parameters'])).mean(axis = 0)
+        fit['t01'] = np.array(list(hdf['t01']['parameters_test'])).mean(axis = 0)
+        fit['t02'] = np.array(list(hdf['t02']['parameters_test'])).mean(axis = 0)
+        fit['t03'] = np.array(list(hdf['t03']['parameters_test'])).mean(axis = 0)
     return fit
 
 def load_bilayer_fit():
@@ -20,7 +20,7 @@ def load_bilayer_fit():
     fit = {}
     f = "/".join(bilayer_tight_binding.fits.__file__.split("/")[:-1])+"/fit_bilayer.hdf5"
     with h5py.File(f,'r') as hdf:
-        fit['fang'] = np.array(list(hdf['fang']['parameters'])).mean(axis = 0)
+        fit['fang'] = np.array(list(hdf['fang']['parameters_test'])).mean(axis = 0)
     return fit
 
 def graphene(lattice_vectors, atomic_basis, i, j, di, dj):
