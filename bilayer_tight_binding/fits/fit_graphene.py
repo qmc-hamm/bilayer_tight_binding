@@ -27,8 +27,7 @@ for k in fits.keys():
     ptest_list = []
     ptrain_list = []
 
-    # 3-fold cross validation 
-    kf = KFold(n_splits = 3)
+    kf = KFold(n_splits = 4, shuffle = True)
     for train_index, test_index in kf.split(X):
         X_train, X_test = X.iloc[train_index], X.iloc[test_index]
         y_train, y_test = y.iloc[train_index], y.iloc[test_index]
