@@ -13,6 +13,7 @@ Directory structure
     examples/ - Simple examples using our model to generate band structures
 
 To install the model for use externally, use 
+    pip install .
 
 Then import the model as 
     from bilayer_tight_binding.api import tb_model
