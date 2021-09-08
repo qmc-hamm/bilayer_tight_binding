@@ -1,7 +1,3 @@
 Example calculations
-    *.json - reference DFT calculations
-
-    graphene.py - example showing the model calculating farther and farther hoppings 
-    graphene_strain.py - example showing the model calculating bands under simple armchair strain
-
-    bilayer.py - example showing AA, AB, SP bands directly from our model 
+    tblg.py - Example showing 9.4 degree twist calculation 
+    custom.py - Example of a custom calculation using the models directly 

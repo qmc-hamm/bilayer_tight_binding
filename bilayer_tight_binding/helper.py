@@ -46,7 +46,7 @@ def pythtb_model(ase_atoms:ase.Atoms, model_type='letb'):
     Output:
         gra - PythTB model describing hoppings between atoms using model_type        
     """
-    if model_functions not in ['letb','mk']:
+    if model_type not in ['letb','mk']:
         print("Invalid function {}".format(model_functions))
         return None
 
