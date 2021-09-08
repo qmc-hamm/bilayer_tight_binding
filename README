@@ -6,12 +6,13 @@ Directory structure
     datasets/ - Contains raw datasets for single- and bi-layer graphene as HDF files from the SCF/Wannierization calculations            
     bilayer_tight_binding/ - Main code
         model.py     - Model for inter- and intra-layer hoppings
+        helper.py    - Helper functions for ease-of-use
         descriptors/ - Descriptors used in the model fitting    
-        fits/        - Fitting scripts and results from fitting to data in datasets/
+        fits/        - Fitting scripts and results from fitting to data in datasets
+        api.py       - User-facing functions
     examples/ - Simple examples using our model to generate band structures
 
 To install the model for use externally, use 
-    pip install .
 
 Then import the model as 
-    from bilayer_tight_binding.model import graphene, bilayer
+    from bilayer_tight_binding.api import tb_model
