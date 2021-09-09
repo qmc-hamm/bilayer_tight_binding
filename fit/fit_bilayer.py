@@ -1,11 +1,11 @@
 import h5py
 import numpy as np 
 from scipy.optimize import curve_fit
-from bilayer_tight_binding.fits.functions import exponential, moon, fang
-from bilayer_tight_binding.fits.training_data import bilayer_training_data
+from bilayer_tight_binding.functions import exponential, moon, fang
+from training_data import bilayer_training_data
 from sklearn.model_selection import KFold
 
-df = bilayer_training_data('../../datasets/bilayer/')
+df = bilayer_training_data('../data/')
 fits = { 
     'exponential': {
         'function': exponential,
@@ -24,7 +24,7 @@ fits = {
     },
 }
 
-f = h5py.File('fit_bilayer.hdf5','w')
+f = h5py.File('../bilayer_tight_binding/parameters/fit_bilayer.hdf5','w')
 for k in fits.keys():
     ptest_list = []
     ptrain_list = []

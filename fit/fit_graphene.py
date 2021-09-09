@@ -2,11 +2,11 @@ import h5py
 import numpy as np 
 import pandas as pd
 import statsmodels.api as sm
-from bilayer_tight_binding.fits.training_data import graphene_training_data
+from training_data import graphene_training_data
 from sklearn.model_selection import KFold
 
 # Single-layer graphene fits
-df1, df2, df3 = graphene_training_data('../../datasets/bilayer/')
+df1, df2, df3 = graphene_training_data('../data/')
 
 fits = {
     't01': {
@@ -19,7 +19,7 @@ fits = {
         'df': df3,
     },
 }
-f = h5py.File('fit_graphene.hdf5','w')
+f = h5py.File('../bilayer_tight_binding/parameters/fit_graphene.hdf5','w')
 for k in fits.keys():
     y = fits[k]['df']['t']
     X = sm.add_constant(fits[k]['df'].drop(['t'], axis = 1))
