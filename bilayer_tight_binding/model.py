@@ -1,14 +1,14 @@
 import sys
 import h5py
 import numpy as np 
-import bilayer_tight_binding.fits
-from bilayer_tight_binding.fits.functions import fang, moon
+import bilayer_tight_binding.parameters
+from bilayer_tight_binding.functions import fang, moon
 from bilayer_tight_binding.descriptors import descriptors_graphene, descriptors_bilayer
 
 def load_graphene_fit():
     # Load in fits, average over k-folds
     fit = {}
-    f = "/".join(bilayer_tight_binding.fits.__file__.split("/")[:-1])+"/fit_graphene.hdf5"
+    f = "/".join(bilayer_tight_binding.parameters.__file__.split("/")[:-1])+"/fit_graphene.hdf5"
     with h5py.File(f,'r') as hdf:
         fit['t01'] = np.array(list(hdf['t01']['parameters_test'])).mean(axis = 0)
         fit['t02'] = np.array(list(hdf['t02']['parameters_test'])).mean(axis = 0)
@@ -18,7 +18,7 @@ def load_graphene_fit():
 def load_bilayer_fit():
     # Load in fits, average over k-folds
     fit = {}
-    f = "/".join(bilayer_tight_binding.fits.__file__.split("/")[:-1])+"/fit_bilayer.hdf5"
+    f = "/".join(bilayer_tight_binding.parameters.__file__.split("/")[:-1])+"/fit_bilayer.hdf5"
     with h5py.File(f,'r') as hdf:
         fit['fang'] = np.array(list(hdf['fang']['parameters_test'])).mean(axis = 0)
     return fit
