@@ -9,7 +9,7 @@ Directory structure
     examples/ - Simple examples using our model to generate band structures
 
 To install the model for use externally, use 
-#############################################3
+    pip install bilayer_letb
 
 Then import the model as 
     from bilayer_letb.api import tb_model
