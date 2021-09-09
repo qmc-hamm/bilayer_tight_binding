@@ -1,7 +1,7 @@
 import json
 from pythtb import *
 import matplotlib.pyplot as plt
-from bilayer_tight_binding.model import bilayer
+from bilayer_letb.model import bilayer
 
 # use model to compute hoppings
 R0 = 2.6834 # Bohr

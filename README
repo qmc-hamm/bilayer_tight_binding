@@ -2,18 +2,20 @@ Package directory for bilayer tight binding model
 Contains data sets, fits, and externally usable model
 
 Directory structure
-    workflow/ - Contains example files for conducting SCF and Wannierization calculations         
-    datasets/ - Contains raw datasets for single- and bi-layer graphene as HDF files from the SCF/Wannierization calculations            
-    bilayer_tight_binding/ - Main code
-        model.py     - Model for inter- and intra-layer hoppings
-        helper.py    - Helper functions for ease-of-use
-        descriptors/ - Descriptors used in the model fitting    
-        fits/        - Fitting scripts and results from fitting to data in datasets
-        api.py       - User-facing functions
+    bilayer_letb/ - Main code package
+        api.py - User facing 
+        model.py, helper.py - Model and hooks to ASE, PythTB [ref]
+        functions.py - Moon and Fang functions [ref]
+        descriptors/ - Descriptors 
+        parameters/  - Fit parameter hdf5 files
+
+    workflow/ - Workflow files for generating data/
+    data/ - Dataset for fitting
+    fit/ -  Fitting methods for parameters using data/
     examples/ - Simple examples using our model to generate band structures
 
 To install the model for use externally, use 
-    pip install .
+#############################################3
 
 Then import the model as 
-    from bilayer_tight_binding.api import tb_model
+    from bilayer_letb.api import tb_model

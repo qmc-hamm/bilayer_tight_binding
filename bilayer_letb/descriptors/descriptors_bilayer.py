@@ -1,7 +1,7 @@
 import h5py
 import numpy as np
 import pandas as pd
-from bilayer_tight_binding.descriptors import descriptors_graphene
+from bilayer_letb.descriptors import descriptors_graphene
 
 def ix_to_orientation(lattice_vectors, atomic_basis, di, dj, ai, aj):
     """

@@ -1,7 +1,7 @@
 import numpy as np
 import ase
 import pythtb
-import bilayer_tight_binding.model
+import bilayer_letb.model
 
 def compute_hoppings(lattice_vectors, atomic_basis, hopping_model):
     """
@@ -50,8 +50,8 @@ def pythtb_model(ase_atoms:ase.Atoms, model_type='letb'):
         print("Invalid function {}".format(model_functions))
         return None
 
-    models_functions = {'letb':bilayer_tight_binding.model.bilayer,
-                         'mk':bilayer_tight_binding.model.moon_bilayer}
+    models_functions = {'letb':bilayer_letb.model.bilayer,
+                         'mk':bilayer_letb.model.moon_bilayer}
 
     conversion = 1.0/.529177 # ASE is always in angstrom, while our package wants bohr
     lattice_vectors = np.asarray(ase_atoms.cell)*conversion

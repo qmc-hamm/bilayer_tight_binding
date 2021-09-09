@@ -3,7 +3,7 @@ import json
 import ase
 from pythtb import *
 import matplotlib.pyplot as plt
-from bilayer_tight_binding.api import tb_model
+from bilayer_letb.api import tb_model
 # Use our and mk model to compute 9.4 degree twist bands
 
 # Compute hoppings

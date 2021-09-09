@@ -19,7 +19,7 @@ fits = {
         'df': df3,
     },
 }
-f = h5py.File('../bilayer_tight_binding/parameters/fit_graphene.hdf5','w')
+f = h5py.File('../bilayer_letb/parameters/fit_graphene.hdf5','w')
 for k in fits.keys():
     y = fits[k]['df']['t']
     X = sm.add_constant(fits[k]['df'].drop(['t'], axis = 1))
