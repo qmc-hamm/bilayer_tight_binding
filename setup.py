@@ -1,7 +1,21 @@
 from setuptools import setup, find_packages
 
-setup(name='bilayer_letb',
-      version='0.1',
-      packages=find_packages(),
-      include_package_data=True,
-      zip_safe=False)
+setup(
+        name='bilayer_letb',
+        version='0.1',
+        author="Shivesh Pathak,
+                Tawfiq Rakib,
+                Run Hou,
+                Andriy Nevidomskyy,
+                Elif Ertekin, 
+                Harley T. Johnson,
+                Lucas K. Wagner",
+        author_email="lkwagner@illinois.edu",
+        description="LETB model for twisted bilayer graphene",
+        url="https://github.com/qmc-hamm/bilayer_tight_binding",
+        packages=find_packages(),
+        include_package_data=True,
+        zip_safe=False,
+        python_requires=">=3.6, <4",
+        install_requires = ["numpy", "scipy", "pandas", "h5py", "ase", "pythtb"],
+)

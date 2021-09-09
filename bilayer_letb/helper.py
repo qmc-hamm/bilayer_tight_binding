@@ -2,6 +2,7 @@ import numpy as np
 import ase
 import pythtb
 import bilayer_letb.model
+from scipy.spatial.distance import cdist
 
 def compute_hoppings(lattice_vectors, atomic_basis, hopping_model):
     """
@@ -18,7 +19,6 @@ def compute_hoppings(lattice_vectors, atomic_basis, hopping_model):
         hoppings        - float (n) list of hoppings for the given i, j, di, dj
     """
 
-    from scipy.spatial.distance import cdist
     natom = len(atomic_basis)
     di = []
     dj = []
