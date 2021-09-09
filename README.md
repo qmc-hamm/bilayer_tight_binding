@@ -1,11 +1,11 @@
 Package directory for bilayer tight binding model
 
 Directory structure
-    - bilayer_letb/ - Main code package
-    - workflow/ - Workflow files for generating data/
-    - data/ - Dataset for fitting
-    - fit/ -  Fitting methods for parameters using data/
-    - examples/ - Simple examples using our model to generate band structures
+    * bilayer_letb/ - Main code package
+    * workflow/ - Workflow files for generating data/
+    * data/ - Dataset for fitting
+    * fit/ -  Fitting methods for parameters using data/
+    * examples/ - Simple examples using our model to generate band structures
 
 To install the model for use externally, use 
     - pip install bilayer_letb
