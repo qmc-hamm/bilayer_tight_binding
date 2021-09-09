@@ -26,7 +26,7 @@ fits = {
     },
 }
 
-f = h5py.File('../bilayer_letb/parameters/fit_bilayer.hdf5','w')
+f = h5py.File('../bilayer_letb/parameters/fit_interlayer.hdf5','w')
 for k in fits.keys():
     ptest_list = []
     ptrain_list = []

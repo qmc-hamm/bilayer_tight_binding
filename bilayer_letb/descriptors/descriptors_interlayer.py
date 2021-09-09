@@ -1,7 +1,8 @@
+# Interlayer descriptors 
 import h5py
 import numpy as np
 import pandas as pd
-from bilayer_letb.descriptors import descriptors_graphene
+from bilayer_letb.descriptors import descriptors_intralayer
 
 def ix_to_orientation(lattice_vectors, atomic_basis, di, dj, ai, aj):
     """
@@ -16,7 +17,7 @@ def ix_to_orientation(lattice_vectors, atomic_basis, di, dj, ai, aj):
     displacement_vector = di[:, np.newaxis] * lattice_vectors[0] +\
                           dj[:, np.newaxis] * lattice_vectors[1] +\
                           atomic_basis[aj] - atomic_basis[ai]
-    mat = descriptors_graphene.nnmat(lattice_vectors, atomic_basis)
+    mat = descriptors_intralayer.nnmat(lattice_vectors, atomic_basis)
 
     # Compute distances and angles
     theta_12 = []
@@ -51,7 +52,7 @@ def descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     }
 
     # 1-body terms
-    dist_xy, dist_z = descriptors_graphene.ix_to_dist(lattice_vectors, atomic_basis, di, dj, ai, aj)
+    dist_xy, dist_z = descriptors_intralayer.ix_to_dist(lattice_vectors, atomic_basis, di, dj, ai, aj)
     dist = np.sqrt(dist_z ** 2 + dist_xy ** 2)
     output['dxy'] = list(dist_xy)
     output['dz'] = list(dist_z)

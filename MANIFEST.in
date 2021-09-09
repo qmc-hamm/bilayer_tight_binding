@@ -1,2 +1,2 @@
-include bilayer_letb/parameters/fit_graphene.hdf5
-include bilayer_letb/parameters/fit_bilayer.hdf5
+include bilayer_letb/parameters/fit_intralayer.hdf5
+include bilayer_letb/parameters/fit_interlayer.hdf5

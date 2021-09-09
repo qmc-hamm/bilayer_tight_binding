@@ -3,31 +3,31 @@ import h5py
 import numpy as np 
 import bilayer_letb
 from bilayer_letb.functions import fang, moon
-from bilayer_letb.descriptors import descriptors_graphene, descriptors_bilayer
+from bilayer_letb.descriptors import descriptors_intralayer, descriptors_interlayer
 
-def load_graphene_fit():
+def load_intralayer_fit():
     # Load in fits, average over k-folds
     fit = {}
-    f = "/".join(bilayer_letb.__file__.split("/")[:-1])+"/parameters/fit_graphene.hdf5"
+    f = "/".join(bilayer_letb.__file__.split("/")[:-1])+"/parameters/fit_intralayer.hdf5"
     with h5py.File(f,'r') as hdf:
         fit['t01'] = np.array(list(hdf['t01']['parameters_test'])).mean(axis = 0)
         fit['t02'] = np.array(list(hdf['t02']['parameters_test'])).mean(axis = 0)
         fit['t03'] = np.array(list(hdf['t03']['parameters_test'])).mean(axis = 0)
     return fit
 
-def load_bilayer_fit():
+def load_interlayer_fit():
     # Load in fits, average over k-folds
     fit = {}
-    f = "/".join(bilayer_letb.__file__.split("/")[:-1])+"/parameters/fit_bilayer.hdf5"
+    f = "/".join(bilayer_letb.__file__.split("/")[:-1])+"/parameters/fit_interlayer.hdf5"
     with h5py.File(f,'r') as hdf:
         fit['fang'] = np.array(list(hdf['fang']['parameters_test'])).mean(axis = 0)
     return fit
 
-def graphene(lattice_vectors, atomic_basis, i, j, di, dj):
+def intralayer(lattice_vectors, atomic_basis, i, j, di, dj):
     """
-    Our model for single layer graphene
+    Our model for single layer intralayer
     Input: 
-        lattice_vectors - float (nlat x 3) where nlat = 2 lattice vectors for graphene in BOHR
+        lattice_vectors - float (nlat x 3) where nlat = 2 lattice vectors for intralayer in BOHR
         atomic_basis    - float (natoms x 3) where natoms are the number of atoms in the computational cell in BOHR
         i, j            - int   (n) list of atomic bases you are hopping between
         di, dj          - int   (n) list of displacement indices for the hopping
@@ -43,11 +43,11 @@ def graphene(lattice_vectors, atomic_basis, i, j, di, dj):
     dj = np.array(dj)
 
     # Get the descriptors for the fit models
-    partition   = descriptors_graphene.partition_tb(lattice_vectors, atomic_basis, di, dj, i, j)
-    descriptors = descriptors_graphene.descriptors(lattice_vectors, atomic_basis, di, dj, i, j)
+    partition   = descriptors_intralayer.partition_tb(lattice_vectors, atomic_basis, di, dj, i, j)
+    descriptors = descriptors_intralayer.descriptors(lattice_vectors, atomic_basis, di, dj, i, j)
 
     # Get the fit model parameters
-    fit = load_graphene_fit()
+    fit = load_intralayer_fit()
 
     # Predict hoppings
     t01 = np.dot(descriptors[0], fit['t01'][1:]) + fit['t01'][0]
@@ -63,11 +63,11 @@ def graphene(lattice_vectors, atomic_basis, i, j, di, dj):
 
     return hoppings
 
-def bilayer(lattice_vectors, atomic_basis, i, j, di, dj):
+def letb(lattice_vectors, atomic_basis, i, j, di, dj):
     """
-    Our model for bilayer graphene
+    Our model for bilayer intralayer
     Input: 
-        lattice_vectors - float (nlat x 3) where nlat = 2 lattice vectors for graphene in BOHR
+        lattice_vectors - float (nlat x 3) where nlat = 2 lattice vectors for intralayer in BOHR
         atomic_basis    - float (natoms x 3) where natoms are the number of atoms in the computational cell in BOHR
         i, j            - int   (n) list of atomic bases you are hopping between
         di, dj          - int   (n) list of displacement indices for the hopping
@@ -83,18 +83,18 @@ def bilayer(lattice_vectors, atomic_basis, i, j, di, dj):
     dj = np.array(dj)
 
     # Get the bi-layer descriptors 
-    descriptors = descriptors_bilayer.descriptors(lattice_vectors, atomic_basis, di, dj, i, j)
+    descriptors = descriptors_interlayer.descriptors(lattice_vectors, atomic_basis, di, dj, i, j)
     
     # Partition the intra- and inter-layer hoppings indices 
     interlayer = np.array(descriptors['dz'] > 1) # Allows for buckling, won't be more than 1 Bohr
     
     # Compute the inter-layer hoppings
-    fit = load_bilayer_fit()
+    fit = load_interlayer_fit()
     X = descriptors[['dxy','theta_12','theta_21']].values[interlayer]
     interlayer_hoppings = fang(X.T, *fit['fang'])
 
     # Compute the intra-layer hoppings
-    intralayer_hoppings = graphene(lattice_vectors, atomic_basis, i[~interlayer], j[~interlayer], di[~interlayer], dj[~interlayer])
+    intralayer_hoppings = intralayer(lattice_vectors, atomic_basis, i[~interlayer], j[~interlayer], di[~interlayer], dj[~interlayer])
 
     # Reorganize
     hoppings = np.zeros(len(i))
@@ -103,11 +103,11 @@ def bilayer(lattice_vectors, atomic_basis, i, j, di, dj):
 
     return hoppings
 
-def moon_bilayer(lattice_vectors, atomic_basis, i, j, di, dj):
+def mk(lattice_vectors, atomic_basis, i, j, di, dj):
     """
     Moon model for bilayer graphene - Moon and Koshino, PRB 85 (2012)
     Input: 
-        lattice_vectors - float (nlat x 3) where nlat = 2 lattice vectors for graphene in BOHR
+        lattice_vectors - float (nlat x 3) where nlat = 2 lattice vectors for intralayer in BOHR
         atomic_basis    - float (natoms x 3) where natoms are the number of atoms in the computational cell in BOHR
         i, j            - int   (n) list of atomic bases you are hopping between
         di, dj          - int   (n) list of displacement indices for the hopping
@@ -120,6 +120,6 @@ def moon_bilayer(lattice_vectors, atomic_basis, i, j, di, dj):
     j = np.array(j)
     di = np.array(di)
     dj = np.array(dj)
-    dxy, dz = descriptors_graphene.ix_to_dist(lattice_vectors, atomic_basis, di, dj, i, j)
+    dxy, dz = descriptors_intralayer.ix_to_dist(lattice_vectors, atomic_basis, di, dj, i, j)
     hoppings = moon([np.sqrt(dz**2 + dxy**2), dz], -2.7, 1.17, 0.48)
     return hoppings

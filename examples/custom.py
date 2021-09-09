@@ -1,9 +1,8 @@
 # Custom usage of the letb, look at tblg.py for default behavior
-
 import json
 from pythtb import *
 import matplotlib.pyplot as plt
-from bilayer_letb.model import bilayer
+from bilayer_letb.model import letb
 
 # use model to compute hoppings
 R0 = 2.6834 # Bohr
@@ -13,7 +12,7 @@ i =  [1, 1, 1, 3, 3, 3, 2, 3, 3, 3, 1, 1, 1, 1]
 j =  [0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 3, 2, 2, 2]
 di = [0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1]
 dj = [0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1]
-hoppings = bilayer(lattice_vectors, atomic_basis, i, j, di, dj)
+hoppings = letb(lattice_vectors, atomic_basis, i, j, di, dj)
 
 # compute bands
 lat = lattice_vectors[:, :-1]
