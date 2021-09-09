@@ -13,3 +13,6 @@ To install the model for use externally, use
 
 Then import the model as 
     from bilayer_letb.api import tb_model
+
+Full code, examples and workflows available at
+    https://github.com/qmc-hamm/bilayer_tight_binding
