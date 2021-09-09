@@ -3,12 +3,6 @@ Contains data sets, fits, and externally usable model
 
 Directory structure
     bilayer_letb/ - Main code package
-        api.py - User facing 
-        model.py, helper.py - Model and hooks to ASE, PythTB [ref]
-        functions.py - Moon and Fang functions [ref]
-        descriptors/ - Descriptors 
-        parameters/  - Fit parameter hdf5 files
-
     workflow/ - Workflow files for generating data/
     data/ - Dataset for fitting
     fit/ -  Fitting methods for parameters using data/
