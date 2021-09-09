@@ -1,6 +1,0 @@
-bilayer_letb/
-    api.py - User facing 
-    model.py, helper.py - Model and hooks to ASE, PythTB
-    functions.py - Non-linear interlayer hopping functions
-    descriptors/ - Descriptors 
-    parameters/  - Fit parameter hdf5 files
