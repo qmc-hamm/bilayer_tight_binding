@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
         name='bilayer_letb',
-        version='0.1',
+        version='0.0.1',
         author="Shivesh Pathak, Tawfiq Rakib, Run Hou, Andriy Nevidomskyy, Elif Ertekin, Harley T. Johnson, Lucas K. Wagner",
         author_email="shiveshapathak@gmail.com, lkwagner@illinois.edu",
         description="LETB model for twisted bilayer graphene",
