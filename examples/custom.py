@@ -1,3 +1,5 @@
+# Custom usage of the letb, look at tblg.py for default behavior
+
 import json
 from pythtb import *
 import matplotlib.pyplot as plt

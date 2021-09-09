@@ -2,9 +2,9 @@ import h5py
 import subprocess
 import numpy as np
 import pandas as pd
-from bilayer_letb.descriptors import descriptors_bilayer, descriptors_graphene 
+from bilayer_letb.descriptors import descriptors_interlayer, descriptors_intralayer 
 
-def graphene_training_data(dataset):
+def intralayer_training_data(dataset):
     data = []
     flist = subprocess.Popen(["ls", dataset],
                           stdout=subprocess.PIPE).communicate()[0]
@@ -25,8 +25,8 @@ def graphene_training_data(dataset):
             dj  = np.array(tb_hamiltonian['displacementj'][:])
             ai  = np.array(tb_hamiltonian['atomi'][:])
             aj  = np.array(tb_hamiltonian['atomj'][:])
-        partition = descriptors_graphene.partition_tb(lattice_vectors, atomic_basis, di, dj, ai, aj) 
-        data = descriptors_graphene.descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj) 
+        partition = descriptors_intralayer.partition_tb(lattice_vectors, atomic_basis, di, dj, ai, aj) 
+        data = descriptors_intralayer.descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj) 
         data[0]['t'] = tij[partition[0]]
         data[1]['t'] = tij[partition[1]]
         data[2]['t'] = tij[partition[2]]
@@ -38,7 +38,7 @@ def graphene_training_data(dataset):
     df3 = pd.concat(df3)
     return df1, df2, df3
 
-def bilayer_training_data(dataset):
+def interlayer_training_data(dataset):
     data = []
     flist = subprocess.Popen(["ls", dataset],
                           stdout=subprocess.PIPE).communicate()[0]
@@ -57,7 +57,7 @@ def bilayer_training_data(dataset):
             dj  = np.array(tb_hamiltonian['displacementj'][:])
             ai  = np.array(tb_hamiltonian['atomi'][:])
             aj  = np.array(tb_hamiltonian['atomj'][:])
-        data = descriptors_bilayer.descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj) 
+        data = descriptors_interlayer.descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj) 
         data['t'] = tij 
         df.append(data)
     df = pd.concat(df)

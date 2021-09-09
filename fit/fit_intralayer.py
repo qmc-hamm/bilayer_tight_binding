@@ -1,12 +1,14 @@
+# Fit intra-layer parameters
+
 import h5py
 import numpy as np 
 import pandas as pd
 import statsmodels.api as sm
-from training_data import graphene_training_data
+from training_data import intralayer_training_data
 from sklearn.model_selection import KFold
 
-# Single-layer graphene fits
-df1, df2, df3 = graphene_training_data('../data/')
+# Single-layer intralayer fits
+df1, df2, df3 = intralayer_training_data('../data/')
 
 fits = {
     't01': {
@@ -19,7 +21,7 @@ fits = {
         'df': df3,
     },
 }
-f = h5py.File('../bilayer_letb/parameters/fit_graphene.hdf5','w')
+f = h5py.File('../bilayer_letb/parameters/fit_intralayer.hdf5','w')
 for k in fits.keys():
     y = fits[k]['df']['t']
     X = sm.add_constant(fits[k]['df'].drop(['t'], axis = 1))

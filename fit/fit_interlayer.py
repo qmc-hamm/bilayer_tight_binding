@@ -1,11 +1,13 @@
+# Fit inter-layer parameters
+
 import h5py
 import numpy as np 
 from scipy.optimize import curve_fit
 from bilayer_letb.functions import exponential, moon, fang
-from training_data import bilayer_training_data
+from training_data import interlayer_training_data
 from sklearn.model_selection import KFold
 
-df = bilayer_training_data('../data/')
+df = interlayer_training_data('../data/')
 fits = { 
     'exponential': {
         'function': exponential,
