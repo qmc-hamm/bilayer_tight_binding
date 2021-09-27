@@ -1,10 +1,10 @@
 Data files, one HDF5 file per density functional theory calculation 
 *.hdf5/
-    atomic_basis - Atomic basis 
-    energy - SCF total energy
+    atomic_basis - Atomic basis in Angstrom
+    energy - SCF total energy in Hartree
     lattice_vectors - Lattice vectors
     tb_hamiltonian - Tight binding Hamiltonian
         atomi, atomj - Atom indices for hopping
         displacementi, displacementj - Indices for lattice displacements 
-        tij - Hopping magnitude
+        tij - Hopping magnitude in Hartree
     uuid - Unique ID
