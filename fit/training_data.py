@@ -47,19 +47,20 @@ def interlayer_training_data(dataset):
 
     df = []
     for f in flist:
-        with h5py.File(f, 'r') as hdf:
-            # Unpack hdf
-            lattice_vectors = np.array(hdf['lattice_vectors'][:]) * 1.88973
-            atomic_basis =    np.array(hdf['atomic_basis'][:])    * 1.88973
-            tb_hamiltonian = hdf['tb_hamiltonian']
-            tij = np.array(tb_hamiltonian['tij'][:])
-            di  = np.array(tb_hamiltonian['displacementi'][:])
-            dj  = np.array(tb_hamiltonian['displacementj'][:])
-            ai  = np.array(tb_hamiltonian['atomi'][:])
-            aj  = np.array(tb_hamiltonian['atomj'][:])
-        data = descriptors_interlayer.descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj) 
-        data['t'] = tij 
-        df.append(data)
+        if ".hdf5" in f:
+            with h5py.File(f, 'r') as hdf:
+                # Unpack hdf
+                lattice_vectors = np.array(hdf['lattice_vectors'][:]) * 1.88973
+                atomic_basis =    np.array(hdf['atomic_basis'][:])    * 1.88973
+                tb_hamiltonian = hdf['tb_hamiltonian']
+                tij = np.array(tb_hamiltonian['tij'][:])
+                di  = np.array(tb_hamiltonian['displacementi'][:])
+                dj  = np.array(tb_hamiltonian['displacementj'][:])
+                ai  = np.array(tb_hamiltonian['atomi'][:])
+                aj  = np.array(tb_hamiltonian['atomj'][:])
+            data = descriptors_interlayer.descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj) 
+            data['t'] = tij 
+            df.append(data)
     df = pd.concat(df)
     df = df[df['dz'] > 1] # Inter-layer hoppings only, allows for buckling
     return df
