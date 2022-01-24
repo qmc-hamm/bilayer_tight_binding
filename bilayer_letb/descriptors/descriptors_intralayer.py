@@ -20,18 +20,14 @@ def nnmat(lattice_vectors, atomic_basis):
             displaced_atoms = atomic_basis + lattice_vectors[np.newaxis, 0] * i + lattice_vectors[np.newaxis, 1] * j
             atoms += [list(x) for x in displaced_atoms]
     atoms = np.array(atoms)
-
-    # Pairwise distance matrix
-    distances = spatial.distance.pdist(atoms)
-    distances = spatial.distance.squareform(distances)
-
-    # Trim
-    distances = distances[:atomic_basis.shape[0]]
+    atomic_basis = np.array(atomic_basis)
 
     # Loop
-    for i in range(distances.shape[0]):
-        ind = np.argsort(distances[i])
-        nnmat[i] = atoms[ind[1:4]] - atomic_basis[i]
+    for i in range(len(atomic_basis)):
+        displacements = atoms - atomic_basis[i]
+        distances = np.linalg.norm(displacements,axis=1)
+        ind = np.argsort(distances)
+        nnmat[i] = displacements[ind[1:4]]
 
     return nnmat
 
