@@ -89,7 +89,7 @@ def t01_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     # Compute NN distances
     r = di[:, np.newaxis] * lattice_vectors[0] + dj[:, np.newaxis] * lattice_vectors[1] +\
         atomic_basis[aj] - atomic_basis[ai] # Relative coordinates
-    r[:, -1] = 0 # Project into xy-plane
+    #r[:, -1] = 0 # Project into xy-plane
     a = np.linalg.norm(r, axis = 1)
     return pd.DataFrame({'a': a})
 
@@ -97,7 +97,7 @@ def t02_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     # Compute NNN distances
     r = di[:, np.newaxis] * lattice_vectors[0] + dj[:, np.newaxis] * lattice_vectors[1] +\
         atomic_basis[aj] - atomic_basis[ai] # Relative coordinates
-    r[:, -1] = 0 # Project into xy-plane
+    #r[:, -1] = 0 # Project into xy-plane
     b = np.linalg.norm(r, axis = 1)
 
     # Compute h
@@ -121,7 +121,7 @@ def t03_descriptors(lattice_vectors, atomic_basis, di, dj, ai, aj):
     r = di[:, np.newaxis] * lattice_vectors[0] + dj[:, np.newaxis] * lattice_vectors[1] +\
         atomic_basis[aj] - atomic_basis[ai] # Relative coordinates
     c = np.linalg.norm(r, axis = 1)
-    r[:, -1] = 0 # Project into xy-plane
+    #r[:, -1] = 0 # Project into xy-plane
 
     # All other hexagon descriptors
     l = []

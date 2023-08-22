@@ -5,13 +5,27 @@ import json
 import ase
 from pythtb import *
 import matplotlib.pyplot as plt
+import numpy as np
 from bilayer_letb.api import tb_model
 
 # Compute hoppings
 d = json.load(open('tblg.json'))
 lattice_vectors = d['latvec']
 atomic_basis = d['atoms']
-ase_atoms = ase.Atoms(['C']*len(atomic_basis), positions = atomic_basis, cell = lattice_vectors, pbc = True)
+z = np.array(atomic_basis)[:,2]
+top_layer_ind = np.where(z>np.mean(z))
+bot_layer_ind = np.where(z<np.mean(z))
+layer_types = np.zeros(np.shape(atomic_basis)[0])
+layer_types[top_layer_ind] = np.zeros_like(top_layer_ind)
+layer_types[bot_layer_ind] = np .ones_like(bot_layer_ind) 
+
+ase_atoms = ase.Atoms(['C']*len(atomic_basis), 
+                      positions = atomic_basis, cell = lattice_vectors, pbc = True)
+
+#set layer types to differentiate between interlayer and intralayer interactions
+ase_atoms.set_array('layer_types',layer_types)
+
+#create model
 letb = tb_model(ase_atoms)
 
 # Compute bands
@@ -31,4 +45,4 @@ ax.set_ylim((-2, 2))
 ax.set_xticks(k_node)
 ax.set_xticklabels(["K", "$\Gamma$", "M", "$K^\prime$"])
 ax.set_xlim(k_node[0], k_node[-1])
-fig.savefig("tblg.pdf", bbox_inches='tight')
+fig.savefig("tblg.png", bbox_inches='tight')
