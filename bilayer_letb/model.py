@@ -63,7 +63,7 @@ def intralayer(lattice_vectors, atomic_basis, i, j, di, dj):
 
     return hoppings
 
-def letb(lattice_vectors, atomic_basis, i, j, di, dj):
+def letb(lattice_vectors, atomic_basis, i, j, di, dj, layer_types=None):
     """
     Our model for bilayer intralayer
     Input: 
@@ -81,20 +81,31 @@ def letb(lattice_vectors, atomic_basis, i, j, di, dj):
     j = np.array(j)
     di = np.array(di)
     dj = np.array(dj)
+    natoms = len(atomic_basis)
 
     # Get the bi-layer descriptors 
     descriptors = descriptors_interlayer.descriptors(lattice_vectors, atomic_basis, di, dj, i, j)
     
     # Partition the intra- and inter-layer hoppings indices 
-    interlayer = np.array(descriptors['dz'] > 1) # Allows for buckling, won't be more than 1 Bohr
-    
+    if type(layer_types)==np.ndarray or type(layer_types)==list:
+        #fix this
+        npairs = np.shape(di)[0]
+        interlayer = np.full((npairs), False)
+        for n in range(npairs): 
+            if layer_types[i[n]]!=layer_types[j[n]]:
+                interlayer[n]=True 
+
+    else:
+        interlayer = np.array(descriptors['dz'] > 1) # Allows for buckling, doesn't work for large corrugation
     # Compute the inter-layer hoppings
     fit = load_interlayer_fit()
     X = descriptors[['dxy','theta_12','theta_21']].values[interlayer]
     interlayer_hoppings = fang(X.T, *fit['fang'])
 
     # Compute the intra-layer hoppings
-    intralayer_hoppings = intralayer(lattice_vectors, atomic_basis, i[~interlayer], j[~interlayer], di[~interlayer], dj[~interlayer])
+    intralayer_hoppings = intralayer(lattice_vectors, atomic_basis, 
+                                     i[~interlayer], j[~interlayer], 
+                                     di[~interlayer], dj[~interlayer])
 
     # Reorganize
     hoppings = np.zeros(len(i))
@@ -103,7 +114,7 @@ def letb(lattice_vectors, atomic_basis, i, j, di, dj):
 
     return hoppings
 
-def mk(lattice_vectors, atomic_basis, i, j, di, dj):
+def mk(lattice_vectors, atomic_basis, i, j, di, dj,layer_types=None):
     """
     Moon model for bilayer graphene - Moon and Koshino, PRB 85 (2012)
     Input: 

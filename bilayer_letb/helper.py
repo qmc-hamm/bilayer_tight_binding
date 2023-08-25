@@ -4,13 +4,14 @@ import pythtb
 import bilayer_letb.model
 from scipy.spatial.distance import cdist
 
-def compute_hoppings(lattice_vectors, atomic_basis, hopping_model):
+def compute_hoppings(lattice_vectors, atomic_basis, hopping_model,layer_types=None):
     """
     Compute hoppings in a hexagonal environment of the computation cell 
     Adequate for large unit cells (> 100 atoms)
     Input:
         lattice_vectors - float (nlat x 3) where nlat = 2 lattice vectors for graphene in BOHR
         atomic_basis    - float (natoms x 3) where natoms are the number of atoms in the computational cell in BOHR
+        layer_types     - int   (natoms) layer index of atom i
         hopping_model   - model for computing hoppings
 
     Output:
@@ -34,7 +35,7 @@ def compute_hoppings(lattice_vectors, atomic_basis, hopping_model):
     dj = np.array(dj)[indj]
     i  = indi
     j  = indj % natom
-    hoppings = hopping_model(lattice_vectors, atomic_basis, i, j, di, dj) / 2 # Divide by 2 since we are double counting every pair
+    hoppings = hopping_model(lattice_vectors, atomic_basis,i, j, di, dj, layer_types=layer_types) / 2 # Divide by 2 since we are double counting every pair
     return i, j, di, dj, hoppings
 
 def pythtb_model(ase_atoms:ase.Atoms, model_type='letb'):
@@ -46,18 +47,26 @@ def pythtb_model(ase_atoms:ase.Atoms, model_type='letb'):
     Output:
         gra - PythTB model describing hoppings between atoms using model_type        
     """
+    models_functions = {'letb':bilayer_letb.model.letb,
+                         'mk':bilayer_letb.model.mk}
     if model_type not in ['letb','mk']:
-        print("Invalid function {}".format(model_functions))
+        print("Invalid function {}".format(models_functions))
         return None
 
     models_functions = {'letb':bilayer_letb.model.letb,
                          'mk':bilayer_letb.model.mk}
-
+    
     conversion = 1.0/.529177 # ASE is always in angstrom, while our package wants bohr
     lattice_vectors = np.asarray(ase_atoms.cell)*conversion
     atomic_basis = np.asarray(ase_atoms.get_positions(wrap=True))*conversion
-
-    i, j, di, dj, hoppings = compute_hoppings(lattice_vectors, atomic_basis, models_functions[model_type])
+    
+    #optional stricter descriptor between layers, necesssary for high corrugation
+    if ase_atoms.has('layer_types'):
+        layer_types = np.asarray(ase_atoms.get_array('layer_types'))
+    else:
+        layer_types = None
+    i, j, di, dj, hoppings = compute_hoppings(lattice_vectors, atomic_basis, 
+                                     models_functions[model_type],layer_types=layer_types)
     gra = pythtb.tb_model(2, 3, lattice_vectors, atomic_basis)
     for ii, jj, dii, djj, hopping in zip(i, j, di, dj, hoppings):
         gra._hoppings.append([hopping, ii, jj, np.array([dii, djj, 0])])

@@ -2,15 +2,17 @@ import h5py
 import subprocess
 import numpy as np
 import pandas as pd
+import glob
 from bilayer_letb.descriptors import descriptors_interlayer, descriptors_intralayer 
 
 def intralayer_training_data(dataset):
     data = []
-    flist = subprocess.Popen(["ls", dataset],
-                          stdout=subprocess.PIPE).communicate()[0]
-    flist = flist.decode('utf-8').split("\n")[:-1]
-    flist = [dataset+x for x in flist]
+    # flist = subprocess.Popen(["ls", dataset],
+    #                       stdout=subprocess.PIPE).communicate()[0]
+    # flist = flist.decode('utf-8').split("\n")[:-1]
+    # flist = [dataset+x for x in flist]
 
+    flist = glob.glob('../data/*.hdf5',recursive=True)
     df1 = []
     df2 = []
     df3 = []
@@ -40,10 +42,11 @@ def intralayer_training_data(dataset):
 
 def interlayer_training_data(dataset):
     data = []
-    flist = subprocess.Popen(["ls", dataset],
-                          stdout=subprocess.PIPE).communicate()[0]
-    flist = flist.decode('utf-8').split("\n")[:-1]
-    flist = [dataset+x for x in flist]
+    # flist = subprocess.Popen(["ls", dataset],
+    #                       stdout=subprocess.PIPE).communicate()[0]
+    # flist = flist.decode('utf-8').split("\n")[:-1]
+    # flist = [dataset+x for x in flist]
+    flist = glob.glob('../data/*.hdf5',recursive=True)
 
     df = []
     for f in flist:
