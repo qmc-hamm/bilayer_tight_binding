@@ -17,7 +17,7 @@ top_layer_ind = np.where(z>np.mean(z))
 bot_layer_ind = np.where(z<np.mean(z))
 layer_types = np.zeros(np.shape(atomic_basis)[0])
 layer_types[top_layer_ind] = np.zeros_like(top_layer_ind)
-layer_types[bot_layer_ind] = np .ones_like(bot_layer_ind) 
+layer_types[bot_layer_ind] = np.ones_like(bot_layer_ind) 
 
 ase_atoms = ase.Atoms(['C']*len(atomic_basis), 
                       positions = atomic_basis, cell = lattice_vectors, pbc = True)

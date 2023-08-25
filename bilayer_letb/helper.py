@@ -63,7 +63,8 @@ def pythtb_model(ase_atoms:ase.Atoms, model_type='letb'):
     #optional stricter descriptor between layers, necesssary for high corrugation
     if ase_atoms.has('layer_types'):
         layer_types = np.asarray(ase_atoms.get_array('layer_types'))
-
+    else:
+        layer_types = None
     i, j, di, dj, hoppings = compute_hoppings(lattice_vectors, atomic_basis, 
                                      models_functions[model_type],layer_types=layer_types)
     gra = pythtb.tb_model(2, 3, lattice_vectors, atomic_basis)
